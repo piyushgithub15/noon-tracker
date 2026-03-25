@@ -5,6 +5,7 @@ import { initDb, closeDb } from "./storage";
 import { initTelegram, notifyStartup } from "./telegram";
 import { runPriceCheck } from "./tracker";
 import { closeBrowser } from "./scraper";
+import { startServer } from "./server";
 
 async function main(): Promise<void> {
   logger.info("Noon Price Tracker starting up...");
@@ -12,6 +13,8 @@ async function main(): Promise<void> {
   validateConfig();
   initDb();
   initTelegram();
+
+  startServer(config.port);
 
   if (config.checkOnStartup || process.argv.includes("--check-now")) {
     await notifyStartup();

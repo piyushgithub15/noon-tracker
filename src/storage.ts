@@ -82,6 +82,35 @@ export function getLowestPriceOverall(): PriceRecord | undefined {
     .get() as PriceRecord | undefined;
 }
 
+export function getLatestPrices(): PriceRecord[] {
+  return db
+    .prepare(
+      `SELECT p.* FROM prices p
+       INNER JOIN (
+         SELECT platform, MAX(scraped_at) as max_scraped
+         FROM prices GROUP BY platform
+       ) latest ON p.platform = latest.platform AND p.scraped_at = latest.max_scraped
+       ORDER BY p.price ASC`
+    )
+    .all() as PriceRecord[];
+}
+
+export function getPriceHistory(platform: string, limit = 50): PriceRecord[] {
+  return db
+    .prepare(
+      `SELECT * FROM prices WHERE platform = ? ORDER BY scraped_at DESC LIMIT ?`
+    )
+    .all(platform, limit) as PriceRecord[];
+}
+
+export function getAllPriceHistory(limit = 100): PriceRecord[] {
+  return db
+    .prepare(
+      `SELECT * FROM prices ORDER BY scraped_at DESC LIMIT ?`
+    )
+    .all(limit) as PriceRecord[];
+}
+
 export function closeDb(): void {
   db?.close();
 }

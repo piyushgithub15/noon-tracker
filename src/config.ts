@@ -55,6 +55,7 @@ export const config = {
   cron: process.env.CRON_SCHEDULE ?? "*/5 * * * *",
   checkOnStartup: process.env.CHECK_ON_STARTUP === "true",
   dbPath: path.resolve(process.env.DB_PATH ?? "./data/prices.db"),
+  port: parseInt(process.env.PORT ?? "3000", 10),
   navigationTimeout: 60_000,
   priceWaitTimeout: 30_000,
 };
