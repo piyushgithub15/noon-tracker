@@ -7,41 +7,43 @@ export interface ProductTarget {
   url: string;
   /** CSS selectors to try for price extraction, in priority order */
   priceSelectors: string[];
+  /** If true, this is a search/listing page and we extract from the first matching result */
+  isSearchPage?: boolean;
 }
 
 export const PRODUCTS: ProductTarget[] = [
   {
-    name: "iPhone 17 Pro 256GB Deep Blue (eSIM) - noon",
+    name: "iPhone 17 Pro 256GB Deep Blue (eSIM) Intl - noon",
     platform: "noon",
-    url: "https://www.noon.com/uae-en/iphone-17-pro-256-gb-deep-blue-5g-esim-only-with-facetime-international-version/N70211534V/p/",
+    url: "https://www.noon.com/uae-en/iphone-17-pro-256-gb-deep-blue-5g-esim-only-with-facetime-international-version/N70211682V/p/",
     priceSelectors: [
       'span[data-qa="div-price-now"]',
-      ".priceNow",
+      '[data-qa*="price"] span',
+      '[class*="priceNow"]',
+      '[class*="sellingPrice"]',
       '[class*="price"] span',
-      '[data-qa*="price"]',
     ],
   },
   {
-    name: "iPhone 17 Pro 256GB Deep Blue (eSIM) - Supermall",
+    name: "iPhone 17 Pro 256GB Deep Blue (eSIM) Intl - Supermall",
     platform: "supermall",
-    url: "https://supermall.noon.com/uae-en/iphone-17-pro-256-gb-deep-blue-5g-esim-only-with-facetime-international-version/N70211534V/p/",
+    url: "https://www.noon.com/uae-en/search/?q=iphone+17+pro+256gb+deep+blue+international+esim&f[fulfilled_by]=supermall",
     priceSelectors: [
-      'span[data-qa="div-price-now"]',
-      ".priceNow",
-      '[class*="price"] span',
+      '[class*="price"]',
       '[data-qa*="price"]',
     ],
+    isSearchPage: true,
   },
   {
-    name: "iPhone 17 Pro 256GB Deep Blue (eSIM) - Minutes",
+    name: "iPhone 17 Pro 256GB Deep Blue (eSIM) Intl - Minutes",
     platform: "minutes",
-    url: "https://minutes.noon.com/uae-en/iphone-17-pro-256-gb-deep-blue-5g-esim-only-with-facetime-international-version/N70211534V/p/",
+    url: "https://minutes.noon.com/uae-en/search/?q=iphone+17+pro+256gb+deep+blue",
     priceSelectors: [
-      'span[data-qa="div-price-now"]',
-      ".priceNow",
-      '[class*="price"] span',
+      '[class*="price"]',
+      '[class*="Price"]',
       '[data-qa*="price"]',
     ],
+    isSearchPage: true,
   },
 ];
 
@@ -53,9 +55,7 @@ export const config = {
   cron: process.env.CRON_SCHEDULE ?? "*/5 * * * *",
   checkOnStartup: process.env.CHECK_ON_STARTUP === "true",
   dbPath: path.resolve(process.env.DB_PATH ?? "./data/prices.db"),
-  /** Max browser navigation timeout in ms */
   navigationTimeout: 60_000,
-  /** Max time to wait for price element to appear */
   priceWaitTimeout: 30_000,
 };
 
