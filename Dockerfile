@@ -14,14 +14,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /app
 
 COPY package.json package-lock.json* ./
-RUN npm ci --omit=dev
+RUN npm ci
 
 COPY tsconfig.json ./
 COPY src ./src
 RUN npx tsc
 
+RUN npm prune --omit=dev && rm -rf src tsconfig.json
+
 RUN mkdir -p /app/data
 
+EXPOSE 3000
 ENV NODE_ENV=production
 
 CMD ["node", "dist/index.js"]
